@@ -11,7 +11,7 @@ import javax.swing.ProgressMonitor;
 import javax.swing.UIManager;
 
 public class AppTinhTong extends javax.swing.JFrame{
-    private int stt1, stt2,tong;
+    private double stt1, stt2,tong;
         private JPanel app;
     private JTextField st1;
     private JTextField st2;
@@ -24,20 +24,27 @@ public class AppTinhTong extends javax.swing.JFrame{
       this.setTitle("App Tinh Tong");
       this.setContentPane(app);
       this.pack();
+      // Ok Click
         okButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(app,"Waiting for Server...");
          try {
-                 Socket ClientSocket = new Socket("Localhost", 8080);
+             // Tạo Kết Nối
+                 Socket ClientSocket = new Socket("Localhost", 8081);
+//                 Nhận value từ Server
              DataInputStream inputStream = new DataInputStream(ClientSocket.getInputStream());
+//             Đẩy value lên serve
              DataOutputStream outputStream = new DataOutputStream(ClientSocket.getOutputStream());
-                 stt1 = Integer.parseInt(AppTinhTong.this.st1.getText());
-                 stt2 = Integer.parseInt(AppTinhTong.this.st2.getText());
-                 outputStream.writeInt(stt1);
-                 outputStream.writeInt(stt2);
+                 stt1 = Double.parseDouble(AppTinhTong.this.st1.getText());
+                 stt2 = Double.parseDouble(AppTinhTong.this.st2.getText());
+//                 Đẩy số thứ nhất lên server
+                 outputStream.writeDouble(stt1);
+          //   Đẩy số thứ hai lên server
+                 outputStream.writeDouble(stt2);
                  outputStream.flush();
-                 tong = inputStream.readInt();
+                 // Nhận giá trị tổng từ server
+                 tong = inputStream.readDouble();
                  new Thread() {
                      @Override
                      public void run() {
@@ -56,6 +63,7 @@ public class AppTinhTong extends javax.swing.JFrame{
                         }
             }
         });
+        // Cancel Click
         button2.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,7 +73,6 @@ public class AppTinhTong extends javax.swing.JFrame{
     }
     public static void main(String[] args) {
         JFrame frame = new AppTinhTong();
-
 frame.setSize(300,250);
 //        frame.pack();
         frame.setLocationRelativeTo(null);
